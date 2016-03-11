@@ -52,7 +52,16 @@ Interlock.Backend = new function() {
                                'running': 'status/running' },
 
                'textsecure': { 'send':    'textsecure/send',
-                               'history': 'textsecure/history' }
+                               'history': 'textsecure/history' },
+
+               'electrum':   { 'send':      'electrum/send',
+                               'receive':   'electrum/receive',
+                               'addresses': 'electrum/addresses',
+                               'contacts':  'electrum/contacts',
+                               'banner':    'electrum/banner',
+                               'status':    'electrum/status',
+                               'history':   'electrum/history' },
+
              };
 
   this.API.prefix = '/api/';
