@@ -141,6 +141,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		res = runningStatus(w)
 	case "/api/electrum/create":
 		res = createWallet(w, r)
+	case "/api/electrum/balance":
+		res = getBalance(w)
 	case "/api/textsecure/send", "/api/textsecure/history":
 		cipher, err := conf.GetCipher("TextSecure")
 

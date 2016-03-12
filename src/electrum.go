@@ -58,7 +58,7 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 	return
 }
 
-func getBalance(w http.ResponseWriter, r *http.Request) (res jsonObject) {
+func getBalance(w http.ResponseWriter) (res jsonObject) {
 	var err error
 	var balance_json string
 	var balance jsonObject
