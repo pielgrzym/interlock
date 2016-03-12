@@ -58,26 +58,31 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 	return
 }
 
+func electrumCmd(args[]string, input string) (j jsonObject, err error) {
+	var json_response string
+
+	cmd := "/usr/bin/electrum"
+	json_response, err = execCommand(cmd, args, false, input)
+
+	if err != nil {
+		return nil, err
+	}
+
+	d := json.NewDecoder(strings.NewReader(string(json_response[:])))
+	d.UseNumber()
+
+	err = d.Decode(&j)
+
+	return j, err
+}
+
 func getBalance(w http.ResponseWriter) (res jsonObject) {
 	var err error
-	var balance_json string
 	var balance jsonObject
 
 	args := []string{"getbalance"}
-	cmd := "/usr/bin/electrum"
 
-	balance_json, err = execCommand(cmd, args, false, "")
-
-	status.Log(syslog.LOG_NOTICE, balance_json)
-
-	if err != nil {
-		return
-	}
-
-	d := json.NewDecoder(strings.NewReader(string(balance_json[:])))
-	d.UseNumber()
-
-	err = d.Decode(&balance)
+	balance, err = electrumCmd(args, "")
 
 	if err != nil {
 		return
