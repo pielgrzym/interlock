@@ -3,6 +3,7 @@ package main
 import (
 	"log/syslog"
 	"net/http"
+	"strings"
 )
 
 
@@ -24,9 +25,8 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 	}
 
 	mkseed_args := []string{conf.mountPoint + "/electrum_wallet"}
-	mkseed_cmd := "/usb/bin/electrum_mkseed"
+	mkseed_cmd := "/usr/bin/electrum_mkseed"
 
-	status.Log(syslog.LOG_NOTICE, "Created seed for new Electrum wallet")
 
 	newSeed, err = execCommand(mkseed_cmd, mkseed_args, false, "")
 
@@ -34,12 +34,14 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 		return
 	}
 
-	mkwallet_args := []string{conf.mountPoint + "/electrum_wallet", newSeed, password}
-	mkwallet_cmd := "/usb/bin/electrum_mkwallet"
+	status.Log(syslog.LOG_NOTICE, "Created seed for new Electrum wallet")
+
+	mkwallet_args := []string{conf.mountPoint + "/electrum_wallet",  password}
+	mkwallet_cmd := "/usr/bin/electrum_mkwallet"
 
 	status.Log(syslog.LOG_NOTICE, "Created new Electrum wallet")
 
-	_, err = execCommand(mkwallet_cmd, mkwallet_args, false, "")
+	_, err = execCommand(mkwallet_cmd, mkwallet_args, false, strings.TrimSpace(newSeed))
 
 	if err != nil {
 		return
@@ -48,7 +50,7 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 	res = jsonObject{
 		"status":   "OK",
 		"response": map[string]interface{}{
-			"seed": newSeed,
+			"seed": strings.TrimSpace(newSeed),
 		},
 	}
 
