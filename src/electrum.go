@@ -39,9 +39,9 @@ func createWallet(w http.ResponseWriter, r *http.Request) (res jsonObject) {
 	mkwallet_args := []string{conf.mountPoint + "/electrum_wallet",  password}
 	mkwallet_cmd := "/usr/bin/electrum_mkwallet"
 
-	status.Log(syslog.LOG_NOTICE, "Created new Electrum wallet")
-
 	_, err = execCommand(mkwallet_cmd, mkwallet_args, false, strings.TrimSpace(newSeed))
+
+	status.Log(syslog.LOG_NOTICE, "Created new Electrum wallet")
 
 	if err != nil {
 		return
