@@ -54,12 +54,14 @@ Interlock.Backend = new function() {
                'textsecure': { 'send':    'textsecure/send',
                                'history': 'textsecure/history' },
 
-               'electrum':   { 'send':      'electrum/send',
+               'electrum':   { 'start':     'electrum/start',
+                               'stop':      'electrum/stop',
+                               'status':    'electrum/status',
+                               'send':      'electrum/send',
                                'receive':   'electrum/receive',
                                'addresses': 'electrum/addresses',
                                'contacts':  'electrum/contacts',
                                'banner':    'electrum/banner',
-                               'status':    'electrum/status',
                                'history':   'electrum/history' },
 
              };
