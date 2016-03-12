@@ -50,6 +50,10 @@ func execCommand(cmd string, args []string, root bool, input string) (output str
 	err = c.Run()
 
 	if err != nil {
+		if conf.Debug {
+			log.Printf("Stderr for %s: %s\n", cmd, stderr.String())
+			log.Printf("Stdout for %s: %s\n", cmd, stdout.String())
+		}
 		err = errors.New(stderr.String())
 	}
 
