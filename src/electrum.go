@@ -63,7 +63,7 @@ func getBalance(w http.ResponseWriter) (res jsonObject) {
 	var balance_json string
 	var balance jsonObject
 
-	args := []string{"-w", conf.mountPoint + "/electrum_wallet", "getbalance"}
+	args := []string{"getbalance"}
 	cmd := "/usr/bin/electrum"
 
 	balance_json, err = execCommand(cmd, args, false, "")
