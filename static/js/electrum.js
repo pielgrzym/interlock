@@ -32,4 +32,16 @@ Interlock.Electrum = new function() {
   this.getBalanceCallback = function(msg) {
     console.log(msg.response.balance)
   }
+
+  this.listAddresses = function() {
+    Interlock.Backend.APIRequest(
+      Interlock.Backend.API.electrum.addresses,
+      'GET', null,
+      'Electrum.listAddressesCallback'
+    )
+  }
+
+  this.listAddressesCallback = function(msg) {
+    console.log(msg.response.addresses)
+  }
 }

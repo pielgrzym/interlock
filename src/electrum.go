@@ -99,3 +99,25 @@ func getBalance(w http.ResponseWriter) (res jsonObject) {
 
 	return
 }
+
+func listAddresses(w http.ResponseWriter) (res jsonObject) {
+	var err error
+	var result jsonObject
+
+	args := []string{"listaddresses"}
+
+	result, err = electrumCmd(args, "")
+
+	if err != nil {
+		return
+	}
+
+	res = jsonObject{
+		"status":   "OK",
+		"response": map[string]interface{}{
+			"addresses": result,
+		},
+	}
+
+	return
+}
