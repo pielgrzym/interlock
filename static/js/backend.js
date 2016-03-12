@@ -57,7 +57,7 @@ Interlock.Backend = new function() {
                'electrum':   { 'start':     'electrum/start',
                                'stop':      'electrum/stop',
                                'status':    'electrum/status',
-                               'send':      'electrum/send',
+                               'create':    'electrum/create',
                                'receive':   'electrum/receive',
                                'addresses': 'electrum/addresses',
                                'contacts':  'electrum/contacts',

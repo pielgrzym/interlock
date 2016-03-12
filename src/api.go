@@ -139,6 +139,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		res = versionStatus(w)
 	case "/api/status/running":
 		res = runningStatus(w)
+	case "/api/electrum/create":
+		res = createWallet(w, r)
 	case "/api/textsecure/send", "/api/textsecure/history":
 		cipher, err := conf.GetCipher("TextSecure")
 
