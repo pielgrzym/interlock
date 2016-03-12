@@ -110,6 +110,7 @@
 <script>
   $(document).ready(function() {
     Interlock.FileManager.init();
+    Interlock.Electrum.init();
     /* ensure Interlock.Crypto.cipherList() is completed */
     $.when(Interlock.Crypto.cipherListCompleted).done(function () {
       Interlock.FileManager.fileList('mainView');
