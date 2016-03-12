@@ -18,6 +18,18 @@ Interlock.Electrum = new function() {
   }
 
   this.walletCreateCallback = function(msg) {
-    console.log(msg);
+    console.log(msg.response.seed);
+  }
+
+  this.getBalance = function() {
+    Interlock.Backend.APIRequest(
+      Interlock.Backend.API.electrum.balance,
+      'POST', null,
+      'Electrum.getBalanceCallback'
+    )
+  }
+
+  this.getBalanceCallback = function(msg) {
+    console.log(msg.response.balance)
   }
 }
