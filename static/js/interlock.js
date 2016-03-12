@@ -43,6 +43,7 @@ if (sessionStorageSupported() && fileAPISupported()) {
   Interlock.Modules.fileManager = new $.Deferred();
   Interlock.Modules.crypto = new $.Deferred();
   Interlock.Modules.textSecure = new $.Deferred();
+  Interlock.Modules.electrum = new $.Deferred();
 
   $.getScript('/js/ui.js')
     .done(function(script, textStatus) {
@@ -68,6 +69,14 @@ if (sessionStorageSupported() && fileAPISupported()) {
       })
       .fail(function(jqxhr, settings, e) {
           console.log('[Interlock.TextSecure] failed to load module: ' + e + '\n');
+    })
+
+    $.getScript('/js/electrum.js')
+      .done(function(script, textStatus) {
+        Interlock.Modules.electrum.resolve();
+      })
+      .fail(function(jqxhr, settings, e) {
+          console.log('[Interlock.Electrum] failed to load module: ' + e + '\n');
     })
   });
 
