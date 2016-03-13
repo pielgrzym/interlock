@@ -76,6 +76,26 @@ func electrumCmd(args[]string, input string) (j jsonObject, err error) {
 	return j, err
 }
 
+type jsonList []interface{}
+
+func electrumCmdArr(args[]string, input string) (j jsonList, err error) {
+	var json_response string
+
+	cmd := "/usr/bin/electrum"
+	json_response, err = execCommand(cmd, args, false, input)
+
+	if err != nil {
+		return nil, err
+	}
+
+	d := json.NewDecoder(strings.NewReader(string(json_response[:])))
+	d.UseNumber()
+
+	err = d.Decode(&j)
+
+	return j, err
+}
+
 func getBalance(w http.ResponseWriter) (res jsonObject) {
 	var err error
 	var balance jsonObject
@@ -102,19 +122,20 @@ func getBalance(w http.ResponseWriter) (res jsonObject) {
 
 func listAddresses(w http.ResponseWriter) (res jsonObject) {
 	var err error
-	var result jsonObject
+	var result jsonList
 
 	args := []string{"listaddresses"}
 
-	result, err = electrumCmd(args, "")
+	result, err = electrumCmdArr(args, "")
 
 	if err != nil {
+		// status.Log(syslog.LOG_NOTICE, err.Error())
 		return
 	}
 
 	res = jsonObject{
 		"status":   "OK",
-		"response": map[string]interface{}{
+		"response": map[string]jsonList {
 			"addresses": result,
 		},
 	}
