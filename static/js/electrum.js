@@ -1,9 +1,14 @@
 Interlock.Electrum = new function() {
   this.init = function() {
-    var $createButton = $("#open_electrum");
+    var $open_electrum = $("#open_electrum");
+    var $open_file_manager = $("#open_file_manager");
     console.log("[Electrum] Initialization started");
-    $createButton.on('click', function(e) { 
+    $open_electrum.on('click', function(e) { 
       Interlock.Electrum.electrumLoadHandler(e);
+      return false;
+    });
+    $open_file_manager.on('click', function(e) { 
+      Interlock.Electrum.electrumFileManagerHandler(e);
       return false;
     });
   }
@@ -16,8 +21,20 @@ Interlock.Electrum = new function() {
 
         Interlock.Session.getVersion();
         Interlock.Session.statusPoller();
-        Interlock.Electrum.getBalance()
-        Interlock.Electrum.listAddresses()
+        Interlock.Electrum.getBalance();
+        Interlock.Electrum.listAddresses();
+      });
+    }
+  }
+
+  this.electrumFileManagerHandler = function(e) {
+    if (sessionStorage.XSRFToken && sessionStorage.volume) {
+      $.get('/templates/file_manager.html', function(data) {
+        $('body').html(data);
+        document.title = 'INTERLOCK';
+
+        Interlock.Session.getVersion();
+        Interlock.Session.statusPoller();
       });
     }
   }
@@ -61,7 +78,7 @@ Interlock.Electrum = new function() {
     for (addr in addresses) {
       var $li = $("<li></li>");
       $li.text(addr);
-      $("electrum_addresses").append($li);
+      $("#electrum_addresses").append($li);
     }
   }
 }
