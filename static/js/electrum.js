@@ -75,10 +75,9 @@ Interlock.Electrum = new function() {
 
   this.listAddressesCallback = function(msg) {
     var addresses = msg.response.addresses;
-    for (addr in addresses) {
-      var $li = $("<li></li>");
-      $li.text(addr);
+    $.each(addresses, function(i, addr){
+      var $li = $("<li>").text(addr);
       $("#electrum_addresses").append($li);
-    }
+    });
   }
 }

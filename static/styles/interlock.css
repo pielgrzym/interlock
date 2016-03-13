@@ -85,7 +85,7 @@ html, body, img, h1, div {
   cursor: pointer
 }
 
-#file_manager {
+#file_manager, #electrum {
   position: absolute;
   color: #272727;
   right: 32%;
