@@ -1,0 +1,43 @@
+<div id="top-bar">
+  <h1 id="interlock_version">INTERLOCK <span></span>
+  <h1>
+    <a id="open_electrum" href="">Electrum</a> &nbsp;
+    Password:
+    <a id="add_password" href="">Add</a> -
+    <a id="remove_password" href="">Remove</a> -
+    <a id="change_password" href="">Change</a> |
+    <a id="poweroff" href="" onclick="event.preventDefault(); Interlock.Session.powerOff();">Poweroff</a> |
+    <a id="logout" href="" onclick="event.preventDefault(); Interlock.Session.logout();">Logout</a>
+  </h1>
+</div>
+
+<div id="status">
+  <h1>Application Logs</h1>
+  <ul id="logs"></ul>
+
+  <h1>Uploads</h1>
+  <ul id="uploads"></ul>
+
+  <h1>Current Activity</h1>
+  <ul id="notifications"></ul>
+  <ul id="dynamic_status"></ul>
+</div>
+
+<div id="electrum">
+<h1>Electrum BTC wallet</h1> 
+<h2>Balance: <span id="electrum_balance"></span></h2>
+<ul id="electrum_addresses"> </ul>
+</div>
+
+
+<!-- FIXME: cleanup the template from js using unobtrusive JavaScript -->
+<script>
+  $(document).ready(function() {
+    Interlock.Electrum.init();
+    /* ensure Interlock.Crypto.cipherList() is completed */
+    $.when(Interlock.Crypto.cipherListCompleted).done(function () {
+      console.log("Crypto done.")
+
+    });
+  });
+</script>
