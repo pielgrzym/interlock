@@ -142,3 +142,25 @@ func listAddresses(w http.ResponseWriter) (res jsonObject) {
 
 	return
 }
+
+func electrumStatus(w http.ResponseWriter) (res jsonObject) {
+	var err error
+	var resp jsonObject
+
+	args := []string{"daemon", "status"}
+
+	resp, err = electrumCmd(args, "")
+
+	if err != nil {
+		return
+	}
+
+	res = jsonObject{
+		"status":   "OK",
+		"response": map[string]interface{}{
+			"status": resp,
+		},
+	}
+
+	return
+}

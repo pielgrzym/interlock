@@ -11,7 +11,7 @@ Interlock.Electrum = new function() {
       Interlock.Electrum.electrumFileManagerHandler(e);
       return false;
     });
-  }
+  };
 
   this.electrumLoadHandler = function(e) {
     if (sessionStorage.XSRFToken && sessionStorage.volume) {
@@ -23,9 +23,51 @@ Interlock.Electrum = new function() {
         Interlock.Session.statusPoller();
         Interlock.Electrum.getBalance();
         Interlock.Electrum.listAddresses();
+        Interlock.Electrum.statusPoller();
       });
     }
+  };
+
+  /** @protected */
+  this.STATUS_POLLER_INTERVAL = 3000;
+
+  this.refreshStatus = function(status) {
+    var conn = status.connected ? "Connected" : "Disconnected"
+    $("#electrum_status_connection").text(conn);
+    $("#electrum_status_server").text(status.server);
+    $("#electrum_status_server_height").text(status.server_height);
+    $("#electrum_status_blockchain_height").text(status.blockchain_height);
   }
+
+  this.statusPollerCallback = function(backendData) {
+    try {
+      if (backendData.status === 'OK') {
+        this.refreshStatus(backendData.response);
+      }
+    } catch (e) {
+      Interlock.Session.createEvent({'kind': 'critical',
+                                    'msg': '[Interlock.Session.statusPollerCallback] ' + e});
+    } finally {
+      /* re-bounce Interlock.Session.statusPoller
+       * if the XSFRToken is not present the poller exits */
+      if (sessionStorage.XSRFToken) {
+        setTimeout(this.statusPoller, Interlock.Electrum.STATUS_POLLER_INTERVAL);
+      }
+    }
+  };
+
+  this.statusPoller = function() {
+    try {
+      /* re-bounce Interlock.Session.statusPoller
+       * if the XSFRToken is not present the poller exits */
+      if (sessionStorage.XSRFToken) {
+        Interlock.Backend.APIRequest(Interlock.Backend.API.electrum.status, 'POST',
+                                     null, 'Electrum.statusPollerCallback');
+      }
+    } catch (e) {
+      Interlock.Session.createEvent({'kind': 'critical', 'msg': '[Interlock.Session.statusPoller] ' + e});
+    }
+  };
 
   this.electrumFileManagerHandler = function(e) {
     if (sessionStorage.XSRFToken && sessionStorage.volume) {
