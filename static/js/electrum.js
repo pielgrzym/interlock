@@ -21,7 +21,6 @@ Interlock.Electrum = new function() {
 
         Interlock.Session.getVersion();
         Interlock.Session.statusPoller();
-        Interlock.Electrum.getBalance();
         Interlock.Electrum.listAddresses();
         Interlock.Electrum.statusPoller();
       });
@@ -33,7 +32,7 @@ Interlock.Electrum = new function() {
 
   this.refreshStatus = function(status) {
     console.log(status);
-    if (status == "Daemon not running") {
+    if (status == "starting") {
       $starting = $("<li>").text("Starting Electrum daemon").attr("id", "starting");
       $("#electrum_status").prepend($starting);
     } else {
@@ -70,6 +69,7 @@ Interlock.Electrum = new function() {
       if (sessionStorage.XSRFToken) {
         Interlock.Backend.APIRequest(Interlock.Backend.API.electrum.status, 'POST',
                                      null, 'Electrum.statusPollerCallback');
+        Interlock.Electrum.getBalance();
       }
     } catch (e) {
       Interlock.Session.createEvent({'kind': 'critical', 'msg': '[Interlock.Session.statusPoller] ' + e});

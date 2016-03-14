@@ -146,26 +146,31 @@ func listAddresses(w http.ResponseWriter) (res jsonObject) {
 func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 	var err error
 	var resp jsonObject
+	var json_response string
 
 	args := []string{"daemon", "status"}
+	json_response, err = execCommand("/usr/bin/electrum", args, false, "")
 
-	resp, err = electrumCmd(args, "")
-
-	if err != nil {
+	status.Log(syslog.LOG_NOTICE, json_response)
+	if strings.Compare(json_response, "Daemon not running\n") == 0 && err != nil {
 		cmd := "/etc/init.d/S99electrum"
 		args := []string{"start"}
 		_, err = execCommand(cmd, args, true, "")
 
-		status.Log(syslog.LOG_NOTICE, "Starging Electrum daemon")
+		status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
 
 		res = jsonObject{
 			"status":   "OK",
 			"response": map[string]string{
-				"status": "Starting daemon",
+				"status": "starting",
 			},
 		}
-		return
 	} else {
+		d := json.NewDecoder(strings.NewReader(string(json_response[:])))
+		d.UseNumber()
+
+		err = d.Decode(&resp)
+
 		res = jsonObject{
 			"status":   "OK",
 			"response": map[string]interface{}{
