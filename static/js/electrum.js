@@ -32,8 +32,8 @@ Interlock.Electrum = new function() {
   this.STATUS_POLLER_INTERVAL = 30000;
 
   this.refreshStatus = function(status) {
-    console.log(status)
-    var conn = status.connected ? "Connected" : "Disconnected"
+    console.log(status);
+    var conn = status.connected ? "Connected" : "Disconnected";
     $("#electrum_status_connection").text(conn);
     $("#electrum_status_server").text(status.server);
     $("#electrum_status_server_height").text(status.server_height);
@@ -43,7 +43,7 @@ Interlock.Electrum = new function() {
   this.statusPollerCallback = function(backendData) {
     try {
       if (backendData.status === 'OK') {
-        this.refreshStatus(backendData.response);
+        this.refreshStatus(backendData.response.status);
       }
     } catch (e) {
       Interlock.Session.createEvent({'kind': 'critical',
