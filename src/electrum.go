@@ -152,14 +152,26 @@ func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 	resp, err = electrumCmd(args, "")
 
 	if err != nil {
-		return
-	}
+		cmd := "/etc/init.d/S99electrum"
+		args := []string{"start"}
+		_, err = execCommand(cmd, args, true, "")
 
-	res = jsonObject{
-		"status":   "OK",
-		"response": map[string]interface{}{
-			"status": resp,
-		},
+		status.Log(syslog.LOG_NOTICE, "Starging Electrum daemon")
+
+		res = jsonObject{
+			"status":   "OK",
+			"response": map[string]string{
+				"status": "Starting daemon",
+			},
+		}
+		return
+	} else {
+		res = jsonObject{
+			"status":   "OK",
+			"response": map[string]interface{}{
+				"status": resp,
+			},
+		}
 	}
 
 	return

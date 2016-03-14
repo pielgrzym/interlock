@@ -33,11 +33,17 @@ Interlock.Electrum = new function() {
 
   this.refreshStatus = function(status) {
     console.log(status);
-    var conn = status.connected ? "Connected" : "Disconnected";
-    $("#electrum_status_connection").text(conn);
-    $("#electrum_status_server").text(status.server);
-    $("#electrum_status_server_height").text(status.server_height);
-    $("#electrum_status_blockchain_height").text(status.blockchain_height);
+    if (status == "Daemon not running") {
+      $starting = $("<li>").text("Starting Electrum daemon").attr("id", "starting");
+      $("#electrum_status").prepend($starting);
+    } else {
+      $("#electrum_status #starting").remove();
+      var conn = status.connected ? "Connected" : "Disconnected";
+      $("#electrum_status_connection").text(conn);
+      $("#electrum_status_server").text(status.server);
+      $("#electrum_status_server_height").text(status.server_height);
+      $("#electrum_status_blockchain_height").text(status.blockchain_height);
+    }
   }
 
   this.statusPollerCallback = function(backendData) {
