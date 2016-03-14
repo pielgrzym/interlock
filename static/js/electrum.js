@@ -19,9 +19,9 @@ Interlock.Electrum = new function() {
         $('body').html(data);
         document.title = 'INTERLOCK - Electrum';
 
+        Interlock.Electrum.startElectrum();
         Interlock.Session.getVersion();
         Interlock.Session.statusPoller();
-        Interlock.Electrum.listAddresses();
         Interlock.Electrum.statusPoller();
       });
     }
@@ -30,9 +30,17 @@ Interlock.Electrum = new function() {
   /** @protected */
   this.STATUS_POLLER_INTERVAL = 30000;
 
+  this.startElectrum = function() {
+    Interlock.Backend.APIRequest(Interlock.Backend.API.electrum.start, 'POST');
+  };
+
+  this.stopElectrum = function() {
+    Interlock.Backend.APIRequest(Interlock.Backend.API.electrum.stop, 'POST');
+  };
+
   this.refreshStatus = function(status) {
-    console.log(status);
-    if (status == "starting") {
+    if (status == "not_running") {
+      Interlock.Electrum.startElectrum();
       $starting = $("<li>").text("Starting Electrum daemon").attr("id", "starting");
       $("#electrum_status").prepend($starting);
     } else {
@@ -42,8 +50,9 @@ Interlock.Electrum = new function() {
       $("#electrum_status_server").text(status.server);
       $("#electrum_status_server_height").text(status.server_height);
       $("#electrum_status_blockchain_height").text(status.blockchain_height);
+      Interlock.Electrum.getBalance();
     }
-  }
+  };
 
   this.statusPollerCallback = function(backendData) {
     try {
@@ -69,7 +78,6 @@ Interlock.Electrum = new function() {
       if (sessionStorage.XSRFToken) {
         Interlock.Backend.APIRequest(Interlock.Backend.API.electrum.status, 'POST',
                                      null, 'Electrum.statusPollerCallback');
-        Interlock.Electrum.getBalance();
       }
     } catch (e) {
       Interlock.Session.createEvent({'kind': 'critical', 'msg': '[Interlock.Session.statusPoller] ' + e});
@@ -86,7 +94,7 @@ Interlock.Electrum = new function() {
         Interlock.Session.statusPoller();
       });
     }
-  }
+  };
 
   this.walletCreateHandler = function(e) {
     Interlock.Backend.APIRequest(
@@ -95,11 +103,11 @@ Interlock.Electrum = new function() {
       JSON.stringify({password: "test"}),
       'Electrum.walletCreateCallback', null, null
     );
-  }
+  };
 
   this.walletCreateCallback = function(msg) {
     console.log(msg.response.seed);
-  }
+  };
 
   this.getBalance = function() {
     Interlock.Backend.APIRequest(
@@ -107,12 +115,12 @@ Interlock.Electrum = new function() {
       'POST', null,
       'Electrum.getBalanceCallback'
     )
-  }
+  };
 
   this.getBalanceCallback = function(msg) {
     var balance = msg.response.balance;
     $("#electrum_balance").text(balance);
-  }
+  };
 
   this.listAddresses = function() {
     Interlock.Backend.APIRequest(
@@ -120,7 +128,7 @@ Interlock.Electrum = new function() {
       'GET', null,
       'Electrum.listAddressesCallback'
     )
-  }
+  };
 
   this.listAddressesCallback = function(msg) {
     var addresses = msg.response.addresses;
@@ -128,5 +136,5 @@ Interlock.Electrum = new function() {
       var $li = $("<li>").text(addr);
       $("#electrum_addresses").append($li);
     });
-  }
+  };
 }

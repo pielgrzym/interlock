@@ -147,6 +147,10 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		res = listAddresses(w)
 	case "/api/electrum/status":
 		res = electrumStatus(w)
+	case "/api/electrum/start":
+		res = electrumStart(w)
+	case "/api/electrum/stop":
+		res = electrumStop(w)
 	case "/api/textsecure/send", "/api/textsecure/history":
 		cipher, err := conf.GetCipher("TextSecure")
 

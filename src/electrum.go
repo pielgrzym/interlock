@@ -109,8 +109,6 @@ func getBalance(w http.ResponseWriter) (res jsonObject) {
 		return
 	}
 
-	status.Log(syslog.LOG_NOTICE, "Checked wallet balance")
-
 	res = jsonObject{
 		"status":   "OK",
 		"response": map[string]interface{}{
@@ -153,15 +151,14 @@ func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 	json_response, err = execCommand("/usr/bin/electrum", args, false, "")
 
 	if strings.Compare(json_response, "Daemon not running\n") == 0 && err != nil {
-		status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
-		cmd := exec.Command("proxychains4", "electrum", "daemon", "start")
-		err = cmd.Start()
-		status.Log(syslog.LOG_NOTICE, "Done.")
+		// status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
+		// cmd := exec.Command("proxychains4", "electrum", "daemon", "start")
+		// err = cmd.Start()
 
 		res = jsonObject{
 			"status":   "OK",
 			"response": map[string]string{
-				"status": "starting",
+				"status": "not_running",
 			},
 		}
 	} else {
@@ -176,6 +173,36 @@ func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 				"status": resp,
 			},
 		}
+	}
+
+	return
+}
+
+func electrumStart(w http.ResponseWriter) (res jsonObject) {
+	status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
+	cmd := exec.Command("proxychains4", "electrum", "daemon", "start")
+	cmd.Start()
+
+	res = jsonObject{
+		"status":   "OK",
+		"response": map[string]string{
+			"status": "starting",
+		},
+	}
+
+	return
+}
+
+func electrumStop(w http.ResponseWriter) (res jsonObject) {
+	status.Log(syslog.LOG_NOTICE, "Stopping Electrum daemon")
+	cmd := exec.Command("electrum", "daemon", "stop")
+	cmd.Start()
+
+	res = jsonObject{
+		"status":   "OK",
+		"response": map[string]string{
+			"status": "stopping",
+		},
 	}
 
 	return
