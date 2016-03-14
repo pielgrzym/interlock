@@ -145,6 +145,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		res = getBalance(w)
 	case "/api/electrum/addresses":
 		res = listAddresses(w)
+	case "/api/electrum/status":
+		res = electrumStatus(w)
 	case "/api/textsecure/send", "/api/textsecure/history":
 		cipher, err := conf.GetCipher("TextSecure")
 
