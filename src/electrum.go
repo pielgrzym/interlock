@@ -5,6 +5,7 @@ import (
 	"log/syslog"
 	"net/http"
 	"strings"
+	"os/exec"
 )
 
 
@@ -151,13 +152,11 @@ func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 	args := []string{"daemon", "status"}
 	json_response, err = execCommand("/usr/bin/electrum", args, false, "")
 
-	status.Log(syslog.LOG_NOTICE, json_response)
 	if strings.Compare(json_response, "Daemon not running\n") == 0 && err != nil {
-		cmd := "/etc/init.d/S99electrum"
-		args := []string{"start"}
-		_, err = execCommand(cmd, args, true, "")
-
 		status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
+		cmd := exec.Command("/etc/init.d/S99electrum", "start")
+		err = cmd.Start()
+		status.Log(syslog.LOG_NOTICE, "Done.")
 
 		res = jsonObject{
 			"status":   "OK",
