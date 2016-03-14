@@ -154,7 +154,7 @@ func electrumStatus(w http.ResponseWriter) (res jsonObject) {
 
 	if strings.Compare(json_response, "Daemon not running\n") == 0 && err != nil {
 		status.Log(syslog.LOG_NOTICE, "Starting Electrum daemon")
-		cmd := exec.Command("sudo", "/etc/init.d/S99electrum", "start")
+		cmd := exec.Command("proxychains4", "electrum", "daemon", "start")
 		err = cmd.Start()
 		status.Log(syslog.LOG_NOTICE, "Done.")
 
