@@ -29,9 +29,10 @@ Interlock.Electrum = new function() {
   };
 
   /** @protected */
-  this.STATUS_POLLER_INTERVAL = 3000;
+  this.STATUS_POLLER_INTERVAL = 30000;
 
   this.refreshStatus = function(status) {
+    console.log(status)
     var conn = status.connected ? "Connected" : "Disconnected"
     $("#electrum_status_connection").text(conn);
     $("#electrum_status_server").text(status.server);
